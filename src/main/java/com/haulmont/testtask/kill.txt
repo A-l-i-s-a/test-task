@@ -1,2 +1,0 @@
-netstat -ano | findstr 8080
-taskkill -pid 1164 /f
