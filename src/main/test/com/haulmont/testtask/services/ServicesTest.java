@@ -7,6 +7,10 @@ import com.haulmont.testtask.models.*;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class ServicesTest {
@@ -75,9 +79,30 @@ public class ServicesTest {
 
     @Test
     public void delete() {
+        save();
+
+        List<Doctor> beforeD = doctorServices.findAll();
+        doctorServices.delete(doctor5);
+        List<Doctor> afterD = doctorServices.findAll();
+
+        assertTrue(beforeD.size() > afterD.size());
+
+        List<Patient> beforeP = patientServices.findAll();
+        patientServices.delete(patient2);
+        List<Patient> afterP = patientServices.findAll();
+
+        assertTrue(beforeP.size() > afterP.size());
+
+        List<Recipe> beforeR = recipeServices.findAll();
+        recipeServices.delete(recipe1);
+        List<Recipe> afterR = recipeServices.findAll();
+
+        assertTrue(beforeR.size() > afterR.size());
     }
 
     @Test
     public void update() {
+        save();
+
     }
 }

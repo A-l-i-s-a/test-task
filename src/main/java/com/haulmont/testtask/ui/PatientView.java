@@ -4,9 +4,8 @@ import com.haulmont.testtask.dao.PatientDAOImpl;
 import com.haulmont.testtask.models.Patient;
 import com.haulmont.testtask.services.Services;
 import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
+import org.hibernate.exception.ConstraintViolationException;
 
 public class PatientView extends VerticalLayout {
 
@@ -20,17 +19,6 @@ public class PatientView extends VerticalLayout {
 
     //Create a button to update patient information in the database
     Button update = new Button("Update");
-
-    Window subWindow = new Window("Add dok");
-    VerticalLayout subContent = new VerticalLayout();
-
-    TextField name = new TextField("Name");
-    TextField surname = new TextField("Surname");
-    TextField patronymic = new TextField("Patronymic");
-    TextField phone = new TextField("Phone");
-
-    //Create a button to save the doctor in the database
-    Button addDoc = new Button("Add");
 
     HorizontalLayout horizontalLayout = new HorizontalLayout();
 
@@ -52,48 +40,39 @@ public class PatientView extends VerticalLayout {
         grid.setColumnOrder("id", "name", "surname", "patronymic", "phone");
         grid.getColumn("recipes").setHidden(true);
 
-        subWindow.setContent(subContent);
-        subWindow.setModal(true);
-        subWindow.center();
-
-        subContent.addComponent(name);
-        subContent.addComponent(surname);
-        subContent.addComponent(patronymic);
-        subContent.addComponent(phone);
-
-        Patient doctor = new Patient("name1", "surname1", "patronymic1", "1234567");
-        Patient doctor1 = new Patient("name", "surname", "patronymic", "9867537");
-        Patient doctor2 = new Patient("name3", "surname3", "patronymic3", "9865334");
-
-        patientServices.save(doctor);
-        patientServices.save(doctor1);
-        patientServices.save(doctor2);
-
-        subContent.addComponent(addDoc);
-        addDoc.addClickListener(clickEvent -> {
-            Patient newPatient = new Patient(name.getValue(), surname.getValue(), patronymic.getValue(), phone.getValue());
-            patientServices.save(newPatient);
-            dataProvider.getItems().add(newPatient);
-            dataProvider.refreshAll();
-            name.setValue("");
-            surname.setValue("");
-            patronymic.setValue("");
-            phone.setValue("");
-            subWindow.close();
-        });
-
-
         add.addClickListener(clickEvent -> {
                     // Open it in the UI
-                    getUI().addWindow(subWindow);
+                    getUI().addWindow(new PatientAddWindow(dataProvider, patientServices));
                 }
         );
 
-        delete.addClickListener(clickEvent ->
-                Notification.show("You delete doctor 0_0"));
+        delete.addClickListener(clickEvent -> {
+            Patient patient = null;
+            for (Patient patientFromSet : grid.getSelectedItems()) {
+                patient = patientFromSet;
+            }
+            if (patient != null) {
+                try {
+                    patientServices.delete(patient);
+                    dataProvider.refreshAll();
+                } catch (Exception exception) {
+                    Notification.show("Could not execute statement. " + exception);
+                }
+            }
+        });
 
-        update.addClickListener(clickEvent ->
-                Notification.show("You update doctor -_-"));
+        update.addClickListener(clickEvent -> {
+            Patient patient = null;
+            for (Patient patientFromSet : grid.getSelectedItems()) {
+                patient = patientFromSet;
+            }
+
+            if (patient != null) {
+                getUI().addWindow(new PatientUpdateWindow(dataProvider, patientServices, patient));
+            } else {
+                Notification.show("Select line");
+            }
+        });
 
 
     }

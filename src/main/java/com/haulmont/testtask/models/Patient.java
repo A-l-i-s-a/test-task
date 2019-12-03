@@ -1,7 +1,6 @@
 package com.haulmont.testtask.models;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class Patient {
     private String patronymic;
     private String phone;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<Recipe> recipes;
 
     public void addRecipe(Recipe recipe) {
@@ -87,9 +86,9 @@ public class Patient {
 
     @Override
     public String toString() {
-        return  id +
+        return id +
                 " - " + name +
                 " " + surname +
-                " " + patronymic ;
+                " " + patronymic;
     }
 }

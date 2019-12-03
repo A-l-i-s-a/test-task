@@ -2,12 +2,12 @@ package com.haulmont.testtask.ui;
 
 import com.haulmont.testtask.dao.DoctorDAOImpl;
 import com.haulmont.testtask.models.Doctor;
+import com.haulmont.testtask.models.Recipe;
 import com.haulmont.testtask.models.Specialization;
 import com.haulmont.testtask.services.Services;
 import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
 import com.vaadin.ui.*;
+import org.hibernate.exception.ConstraintViolationException;
 
 
 public class DoctorView extends VerticalLayout {
@@ -19,11 +19,6 @@ public class DoctorView extends VerticalLayout {
     TextField surname = new TextField("Surname");
     TextField patronymic = new TextField("Patronymic");
     ComboBox<Specialization> specialization = new ComboBox<>("Specialization");
-
-    // Create a sub-window and set the content
-    Window subWindow = new Window("Add dok");
-
-    VerticalLayout subContent = new VerticalLayout();
 
     //Create a button to add a doctor to the database
     Button add = new Button("Add");
@@ -51,63 +46,53 @@ public class DoctorView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumnOrder("id", "name", "surname", "patronymic", "specialization");
         grid.getColumn("recipes").setHidden(true);
-        grid.getEditor().setEnabled(true);
 
         addComponent(grid);
         setExpandRatio(grid, 1);
 
-        Doctor doctor = new Doctor("name1", "surname1", "patronymic1", Specialization.DENTIST);
-        Doctor doctor1 = new Doctor("name", "surname", "patronymic", Specialization.NEUROLOGIST);
-        Doctor doctor2 = new Doctor("name3", "surname3", "patronymic3", Specialization.OPHTHALMOLOGIST);
-        Doctor doctor3 = new Doctor("name4", "surname4", "patronymic4", Specialization.PEDIATRICIAN);
-        Doctor doctor4 = new Doctor("name6", "surname6", "patronymic6", Specialization.SURGEON);
-        Doctor doctor5 = new Doctor("name5", "surname5", "patronymic5", Specialization.THERAPIST);
-
-        doctorServices.save(doctor);
-        doctorServices.save(doctor1);
-        doctorServices.save(doctor2);
-        doctorServices.save(doctor3);
-        doctorServices.save(doctor4);
-        doctorServices.save(doctor5);
-
-        subWindow.setContent(subContent);
-        subWindow.setModal(true);
-        subWindow.center();
-
         specialization.setItems(Specialization.values());
-
-        subContent.addComponent(name);
-        subContent.addComponent(surname);
-        subContent.addComponent(patronymic);
-        subContent.addComponent(specialization);
-
-        subContent.addComponent(addDoc);
-        addDoc.addClickListener(clickEvent -> {
-            Doctor newDoctor = new Doctor(name.getValue(), surname.getValue(), patronymic.getValue(), specialization.getValue());
-            doctorServices.save(newDoctor);
-            dataProvider.getItems().add(newDoctor);
-            dataProvider.refreshAll();
-            name.setValue("");
-            surname.setValue("");
-            patronymic.setValue("");
-            specialization.setValue(null);
-            subWindow.close();
-        });
 
         add.addClickListener(clickEvent -> {
                     // Open it in the UI
-                    getUI().addWindow(subWindow);
+                    getUI().addWindow(new DoctorAddWindow(dataProvider, doctorServices));
                 }
         );
 
-        delete.addClickListener(clickEvent ->
-                Notification.show("You delete doctor 0_0"));
+        delete.addClickListener(clickEvent -> {
+            Doctor doctor = null;
 
-        update.addClickListener(clickEvent ->
-                Notification.show("You update doctor -_-"));
+            for (Doctor doctorFromSet : grid.getSelectedItems()) {
+                doctor = doctorFromSet;
+            }
 
-        showStatistics.addClickListener(clickEvent ->
-                Notification.show("Well look"));
+            if (doctor != null) {
+                try {
+                    doctorServices.delete(doctor);
+                    dataProvider.refreshAll();
+                } catch (Exception exception) {
+                    Notification.show("Could not execute statement. " + exception);
+                }
+            }
+
+        });
+
+        update.addClickListener(clickEvent -> {
+            Doctor doctor = null;
+
+            for (Doctor doctorFromSet : grid.getSelectedItems()) {
+                doctor = doctorFromSet;
+            }
+
+            if (doctor != null) {
+                getUI().addWindow(new DoctorUpdateWindow(dataProvider, doctorServices, doctor));
+            } else {
+                Notification.show("Select line");
+            }
+        });
+
+        showStatistics.addClickListener(clickEvent -> {
+                getUI().addWindow(new Statistics());
+        });
 
         horizontalLayout.addComponent(add);
         horizontalLayout.addComponent(update);

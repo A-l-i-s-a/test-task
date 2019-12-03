@@ -1,7 +1,5 @@
 package com.haulmont.testtask.models;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     private Specialization specialization;
 
-    @OneToMany(mappedBy = "doctor",  cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Recipe> recipes;
 
     public Doctor() {
@@ -86,8 +84,6 @@ public class Doctor {
     public void setRecipes(List<Recipe> recipes) {
         this.recipes = recipes;
     }
-
-
 
     @Override
     public String toString() {
