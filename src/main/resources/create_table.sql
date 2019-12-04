@@ -61,13 +61,5 @@ create table RECIPE
 
 insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (1, 'dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi', 8, 5, '2020-08-19', 'NORMAL');
 insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (2, 'cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum', 3, 3, '2020-09-08', 'NORMAL');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (3, 'nullam sit amet turpis elementum ligula vehicula consequat morbi a ipsum', 6, 5, '2020-07-15', 'STATIM');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (4, 'justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare', 8, 4, '2019-12-09', 'NORMAL');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (5, 'nisl nunc rhoncus dui vel sem sed sagittis nam congue risus semper porta volutpat quam pede lobortis ligula sit', 1, 5, '2019-12-22', 'STATIM');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (6, 'nulla elit ac nulla sed vel enim sit amet nunc viverra dapibus', 1, 4, '2020-01-30', 'STATIM');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (7, 'consectetuer eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum', 1, 1, '2020-04-10', 'CITO');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (8, 'odio cras mi pede malesuada in imperdiet et commodo vulputate justo in blandit ultrices', 9, 6, '2020-06-26', 'CITO');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (9, 'vivamus vestibulum sagittis sapien cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus etiam vel', 5, 6, '2020-03-23', 'STATIM');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (10, 'est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi venenatis', 3, 5, '2020-02-11', 'NORMAL');
 
 
