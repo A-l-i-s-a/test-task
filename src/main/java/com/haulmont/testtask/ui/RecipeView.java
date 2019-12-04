@@ -6,7 +6,10 @@ import com.haulmont.testtask.dao.RecipeDAOImpl;
 import com.haulmont.testtask.models.*;
 import com.haulmont.testtask.services.Services;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.*;
+import com.vaadin.ui.components.grid.HeaderRow;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 
 import java.time.LocalDate;
@@ -46,6 +49,43 @@ public class RecipeView extends VerticalLayout {
         grid.setDataProvider(dataProvider);
         grid.setSizeFull();
         grid.setColumnOrder("id", "description", "patient", "doctor", "dateCreation");
+
+        HeaderRow filterRow = grid.appendHeaderRow();
+        // Description filter
+        TextField descriptionField = new TextField();
+        descriptionField.addValueChangeListener(event -> dataProvider.addFilter(
+                recipe -> StringUtils.containsIgnoreCase(recipe.getDescription(),
+                        descriptionField.getValue())));
+
+        descriptionField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell("description").setComponent(descriptionField);
+        descriptionField.setSizeFull();
+        descriptionField.setPlaceholder("Filter");
+
+        // Patient filter
+        TextField patientField = new TextField();
+        patientField.addValueChangeListener(event -> dataProvider.addFilter(
+                recipe -> StringUtils.containsIgnoreCase(recipe.getPatient().toString(),
+                        patientField.getValue())));
+
+        patientField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell("patient").setComponent(patientField);
+        patientField.setSizeFull();
+        patientField.setPlaceholder("Filter");
+
+        // Priority filter
+        TextField priorityField = new TextField();
+        priorityField.addValueChangeListener(event -> dataProvider.addFilter(
+                recipe -> StringUtils.containsIgnoreCase(recipe.getPriority().toString(),
+                        priorityField.getValue())));
+
+        priorityField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        filterRow.getCell("priority").setComponent(priorityField);
+        priorityField.setSizeFull();
+        priorityField.setPlaceholder("Filter");
 
         add.addClickListener(clickEvent -> {
                     // Open it in the UI

@@ -5,7 +5,6 @@ import com.haulmont.testtask.models.Patient;
 import com.haulmont.testtask.services.Services;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.*;
-import org.hibernate.exception.ConstraintViolationException;
 
 public class PatientView extends VerticalLayout {
 
