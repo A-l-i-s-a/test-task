@@ -17,7 +17,7 @@ public class Patient {
     private String patronymic;
     private String phone;
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.REFRESH)
     private List<Recipe> recipes;
 
     public void addRecipe(Recipe recipe) {
