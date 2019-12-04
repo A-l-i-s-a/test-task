@@ -40,14 +40,8 @@ public class ServicesTest {
     Patient patient8 = new Patient("Ashely", "Copper", "Blenkinsop", "6003287181");
     Patient patient9 = new Patient( "Allis", "Dunford", "Polin", "9513100029");
 
-    Recipe recipe1 = new Recipe("Dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi", patientServices.find((long) 1), doctorServices.find((long) 1), LocalDate.now(), Priority.NORMAL);
-    Recipe recipe2 = new Recipe("Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum", patientServices.find((long) 1), doctorServices.find((long) 2), LocalDate.now(), Priority.CITO);
-
-
-    @Test
-    public void find() {
-
-    }
+    Recipe recipe1 = new Recipe("Dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi", patientServices.find((long) 1), doctorServices.find((long) 1), LocalDate.now().minusMonths(2), LocalDate.now().plusDays(5),  Priority.NORMAL);
+    Recipe recipe2 = new Recipe("Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum", patientServices.find((long) 1), doctorServices.find((long) 2), LocalDate.now().minusMonths(1), LocalDate.now().plusMonths(1),  Priority.CITO);
 
     @Test
     public void findAll() {
@@ -120,9 +114,4 @@ public class ServicesTest {
         assertTrue(beforeR.size() > afterR.size());
     }
 
-    @Test
-    public void update() {
-        save();
-
-    }
 }

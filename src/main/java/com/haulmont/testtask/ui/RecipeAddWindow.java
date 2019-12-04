@@ -8,7 +8,10 @@ import com.haulmont.testtask.services.Services;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.data.validator.DateRangeValidator;
 import com.vaadin.ui.*;
+
+import java.time.LocalDate;
 
 public class RecipeAddWindow extends Window {
     VerticalLayout layout = new VerticalLayout();
@@ -18,6 +21,7 @@ public class RecipeAddWindow extends Window {
     ComboBox<Patient> patient = new ComboBox<>("Patient");
     ComboBox<Doctor> doctor = new ComboBox<>("Doctor");
     DateField dateCreation = new DateField("Date Creation");
+    DateField validity = new DateField("Validity");
     ComboBox<Priority> priority = new ComboBox<>("Priority");
 
     //Create a button to save the recipe in the database
@@ -40,6 +44,7 @@ public class RecipeAddWindow extends Window {
         doctor.setItems(doctorServices.findAll());
         doctor.setItemCaptionGenerator(doctor -> doctor.getId() + " - " + doctor.getName() + " " + doctor.getSurname() + " " + doctor.getPatronymic());
         layout.addComponent(dateCreation);
+        layout.addComponent(validity);
         priority.setItems(Priority.values());
         layout.addComponent(priority);
 
@@ -48,14 +53,15 @@ public class RecipeAddWindow extends Window {
         binder.forField(description).withValidator(new BeanValidator(Recipe.class, "description")).bind(Recipe::getDescription, Recipe::setDescription);
         binder.forField(patient).withValidator(new BeanValidator(Recipe.class, "patient")).bind(Recipe::getPatient, Recipe::setPatient);
         binder.forField(doctor).withValidator(new BeanValidator(Recipe.class, "doctor")).bind(Recipe::getDoctor, Recipe::setDoctor);
-        binder.forField(dateCreation).withValidator(new BeanValidator(Recipe.class, "dateCreation")).bind(Recipe::getDateCreation, Recipe::setDateCreation);
+        binder.forField(dateCreation).withValidator(new DateRangeValidator("Invalid Date", LocalDate.now().minusYears(1), LocalDate.now())).bind(Recipe::getDateCreation, Recipe::setDateCreation);
+        binder.forField(validity).withValidator(new DateRangeValidator("Invalid Date", LocalDate.now(), LocalDate.now().plusYears(1))).bind(Recipe::getValidity, Recipe::setValidity);
         binder.forField(priority).withValidator(new BeanValidator(Recipe.class, "priority")).bind(Recipe::getPriority, Recipe::setPriority);
 
         layout.addComponent(horizontalLayout);
         horizontalLayout.addComponent(addRecipe);
         addRecipe.addClickListener(clickEvent -> {
             if (binder.isValid()) {
-                Recipe newRecipe = new Recipe(description.getValue(), patient.getValue(), doctor.getValue(), dateCreation.getValue(), priority.getValue());
+                Recipe newRecipe = new Recipe(description.getValue(), patient.getValue(), doctor.getValue(), dateCreation.getValue(), validity.getValue(), priority.getValue());
                 recipeServices.save(newRecipe);
                 dataProvider.getItems().add(newRecipe);
                 dataProvider.refreshAll();

@@ -48,7 +48,7 @@ public class RecipeView extends VerticalLayout {
 
         grid.setDataProvider(dataProvider);
         grid.setSizeFull();
-        grid.setColumnOrder("id", "description", "patient", "doctor", "dateCreation");
+        grid.setColumnOrder("id", "description", "patient", "doctor", "dateCreation", "validity");
 
         HeaderRow filterRow = grid.appendHeaderRow();
         // Description filter

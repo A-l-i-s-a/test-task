@@ -1,8 +1,8 @@
 create table PATIENT
 (
-    ID         BIGINT identity
-        constraint PATIENT_PK
-            primary key,
+    ID               BIGINT identity
+                constraint PATIENT_PK
+                          primary key,
     NAME       CHARACTER(50) not null,
     SURNAME    CHARACTER(50) not null,
     PATRONYMIC CHARACTER(50) not null,
@@ -22,9 +22,9 @@ insert into PATIENT (id, name, patronymic, surname, phone) values (10, 'Allis', 
 
 create table DOCTOR
 (
-    ID             BIGINT identity
-        constraint DOCTOR_PK
-            primary key,
+    ID                    BIGINT identity
+                     constraint DOCTOR_PK
+                              primary key,
     NAME           CHARACTER(50) not null,
     SURNAME        CHARACTER(50) not null,
     PATRONYMIC     CHARACTER(50) not null,
@@ -44,22 +44,22 @@ insert into DOCTOR (id, name, patronymic, surname, specialization) values (10, '
 
 create table RECIPE
 (
-    ID            BIGINT identity
-        constraint TABLE_NAME_PK
-            primary key,
-    DESCRIPTION   VARCHAR(200)  not null,
-    PATIENT_ID    BIGINT        not null
+    ID                  BIGINT identity
+               constraint TABLE_NAME_PK
+                            primary key,
+    DESCRIPTION   VARCHAR(200) not null,
+    PATIENT_ID          BIGINT not null
         constraint RECIPE_PATIENT_ID_FK
-            references PATIENT,
-    DOCTOR_ID     BIGINT        not null
-        constraint RECIPE_DOCTOR_ID_FK
-            references DOCTOR,
-    DATE_CREATION DATE          not null,
-    "validity "   DATE          not null,
+                     references PATIENT,
+    DOCTOR_ID           BIGINT not null
+         constraint RECIPE_DOCTOR_ID_FK
+                      references DOCTOR,
+    DATE_CREATION                  DATE,
+    VALIDITY                       DATE,
     PRIORITY      CHARACTER(20) not null
 );
 
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (1, 'dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi', 8, 5, '2020-08-19', 'NORMAL');
-insert into RECIPE (id, description, patient_id, doctor_id, date_creation, priority) values (2, 'cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum', 3, 3, '2020-09-08', 'NORMAL');
+insert into RECIPE (id, description, patient_id, doctor_id, date_creation, validity, priority) values (1, 'dolor vel est donec odio justo sollicitudin ut suscipit a feugiat et eros vestibulum ac est lacinia nisi', 8, 5, '2019-08-19', '2019-11-19','NORMAL');
+insert into RECIPE (id, description, patient_id, doctor_id, date_creation, validity, priority) values (2, 'cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus vivamus vestibulum', 3, 3, '2019-09-08', '2019-10-19','NORMAL');
 
 

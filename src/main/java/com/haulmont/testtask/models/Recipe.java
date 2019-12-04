@@ -23,6 +23,7 @@ public class Recipe {
     private Doctor doctor;
 
     private LocalDate dateCreation;
+    private LocalDate validity;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -31,11 +32,12 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(String description, Patient patient, Doctor doctor, LocalDate dateCreation, Priority priority) {
+    public Recipe(@NotNull @Size(min = 1) String description, Patient patient, Doctor doctor, LocalDate dateCreation, LocalDate validity, @NotNull Priority priority) {
         this.description = description;
         this.patient = patient;
         this.doctor = doctor;
         this.dateCreation = dateCreation;
+        this.validity = validity;
         this.priority = priority;
     }
 
@@ -83,14 +85,24 @@ public class Recipe {
         this.priority = priority;
     }
 
+    public LocalDate getValidity() {
+        return validity;
+    }
+
+    public void setValidity(LocalDate validity) {
+        this.validity = validity;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
-                ", patient=" + patient.getId() +
-                ", doctor=" + doctor.getId() +
+                ", patient=" + patient +
+                ", doctor=" + doctor +
                 ", dateCreation=" + dateCreation +
+                ", validity=" + validity +
+                ", priority=" + priority +
                 '}';
     }
 }
