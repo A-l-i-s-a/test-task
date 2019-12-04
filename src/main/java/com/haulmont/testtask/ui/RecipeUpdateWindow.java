@@ -8,6 +8,7 @@ import com.haulmont.testtask.services.Services;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.*;
 
 public class RecipeUpdateWindow extends Window {
@@ -49,29 +50,32 @@ public class RecipeUpdateWindow extends Window {
 
         Binder<Recipe> binder = new Binder<>();
 
-        binder.bind(description, Recipe::getDescription, Recipe::setDescription);
-        binder.bind(patient, Recipe::getPatient, Recipe::setPatient);
-        binder.bind(doctor, Recipe::getDoctor, Recipe::setDoctor);
-        binder.bind(dateCreation, Recipe::getDateCreation, Recipe::setDateCreation);
-        binder.bind(priority, Recipe::getPriority, Recipe::setPriority);
+        binder.forField(description).withValidator(new BeanValidator(Recipe.class, "description")).bind(Recipe::getDescription, Recipe::setDescription);
+        binder.forField(patient).withValidator(new BeanValidator(Recipe.class, "patient")).bind(Recipe::getPatient, Recipe::setPatient);
+        binder.forField(doctor).withValidator(new BeanValidator(Recipe.class, "doctor")).bind(Recipe::getDoctor, Recipe::setDoctor);
+        binder.forField(dateCreation).withValidator(new BeanValidator(Recipe.class, "dateCreation")).bind(Recipe::getDateCreation, Recipe::setDateCreation);
+        binder.forField(priority).withValidator(new BeanValidator(Recipe.class, "priority")).bind(Recipe::getPriority, Recipe::setPriority);
 
         binder.readBean(recipe);
 
         horizontalLayout.addComponent(updateRecipe);
 
         updateRecipe.addClickListener(clickEvent -> {
-            try {
-
-                binder.writeBean(recipe);
-                recipeServices.update(recipe);
-                dataProvider.refreshAll();
-
-            } catch (ValidationException e) {
+            if (binder.isValid()) {
+                try {
+                    binder.writeBean(recipe);
+                    recipeServices.update(recipe);
+                    dataProvider.refreshAll();
+                    close();
+                } catch (ValidationException e) {
+                    Notification.show("Recipe could not be saved, " +
+                            "please check field.");
+                    e.printStackTrace();
+                }
+            } else {
                 Notification.show("Recipe could not be saved, " +
-                        "please check error messages for each field.");
+                        "please check field.");
             }
-
-            close();
         });
 
         horizontalLayout.addComponent(new Button("Cancel", event -> close()));

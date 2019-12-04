@@ -2,7 +2,9 @@ package com.haulmont.testtask.ui;
 
 import com.haulmont.testtask.models.Patient;
 import com.haulmont.testtask.services.Services;
+import com.vaadin.data.Binder;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.*;
 
 public class PatientAddWindow extends Window {
@@ -32,17 +34,28 @@ public class PatientAddWindow extends Window {
 
         layout.addComponent(horizontalLayout);
 
+        Binder<Patient> binder = new Binder<>();
+
+        binder.forField(name).withValidator(new BeanValidator(Patient.class, "name")).bind(Patient::getName, Patient::setName);
+        binder.forField(surname).withValidator(new BeanValidator(Patient.class, "surname")).bind(Patient::getSurname, Patient::setSurname);
+        binder.forField(patronymic).withValidator(new BeanValidator(Patient.class, "patronymic")).bind(Patient::getPatronymic, Patient::setPatronymic);
+        binder.forField(phone).withValidator(new BeanValidator(Patient.class, "phone")).bind(Patient::getPhone, Patient::setPhone);
+
         horizontalLayout.addComponent(addPatient);
         addPatient.addClickListener(clickEvent -> {
-            Patient newPatient = new Patient(name.getValue(), surname.getValue(), patronymic.getValue(), phone.getValue());
-            patientServices.save(newPatient);
-            dataProvider.getItems().add(newPatient);
-            dataProvider.refreshAll();
-            name.setValue("");
-            surname.setValue("");
-            patronymic.setValue("");
-            phone.setValue("");
-            close();
+            if (binder.isValid()) {
+                Patient newPatient = new Patient(name.getValue(), surname.getValue(), patronymic.getValue(), phone.getValue());
+                patientServices.save(newPatient);
+                dataProvider.getItems().add(newPatient);
+                dataProvider.refreshAll();
+                name.clear();
+                surname.clear();
+                patronymic.clear();
+                phone.clear();
+                close();
+            } else {
+                Notification.show("Check the fields are filled in correctly");
+            }
         });
 
         horizontalLayout.addComponent(new Button("Cancel", event -> close()));

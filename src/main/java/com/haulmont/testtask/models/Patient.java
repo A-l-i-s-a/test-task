@@ -1,6 +1,7 @@
 package com.haulmont.testtask.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +12,17 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @NotNull
+    @Size(min = 1)
     private String name;
+    @NotNull
+    @Size(min = 1)
     private String surname;
+    @NotNull
+    @Size(min = 1)
     private String patronymic;
+    @NotNull
+    @Pattern(regexp = "[1-9]\\d{9}")
     private String phone;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.REFRESH)

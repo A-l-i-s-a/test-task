@@ -1,6 +1,10 @@
 package com.haulmont.testtask.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +15,17 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
+    @Size(min = 1)
     private String name;
+    @NotNull
+    @Size(min = 1)
     private String surname;
+    @NotNull
+    @Size(min = 1)
     private String patronymic;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Specialization specialization;
 

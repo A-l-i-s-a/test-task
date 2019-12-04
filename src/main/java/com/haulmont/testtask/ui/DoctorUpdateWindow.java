@@ -1,12 +1,12 @@
 package com.haulmont.testtask.ui;
 
 import com.haulmont.testtask.models.Doctor;
-import com.haulmont.testtask.models.Patient;
 import com.haulmont.testtask.models.Specialization;
 import com.haulmont.testtask.services.Services;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.*;
 
 public class DoctorUpdateWindow extends Window {
@@ -44,26 +44,28 @@ public class DoctorUpdateWindow extends Window {
 
         Binder<Doctor> binder = new Binder<>();
 
-        binder.bind(name, Doctor::getName, Doctor::setName);
-        binder.bind(surname, Doctor::getSurname, Doctor::setSurname);
-        binder.bind(patronymic, Doctor::getPatronymic, Doctor::setPatronymic);
-        binder.bind(specialization, Doctor::getSpecialization, Doctor::setSpecialization);
+        binder.forField(name).withValidator(new BeanValidator(Doctor.class, "name")).bind(Doctor::getName, Doctor::setName);
+        binder.forField(surname).withValidator(new BeanValidator(Doctor.class, "surname")).bind(Doctor::getSurname, Doctor::setSurname);
+        binder.forField(patronymic).withValidator(new BeanValidator(Doctor.class, "patronymic")).bind(Doctor::getPatronymic, Doctor::setPatronymic);
+        binder.forField(specialization).withValidator(new BeanValidator(Doctor.class, "specialization")).bind(Doctor::getSpecialization, Doctor::setSpecialization);
 
         binder.readBean(doctor);
 
         updatePatient.addClickListener(clickEvent -> {
-            try {
-
-                binder.writeBean(doctor);
-                doctorServices.update(doctor);
-                dataProvider.refreshAll();
-
-            } catch (ValidationException e) {
-                Notification.show("Patient could not be saved, " +
-                        "please check error messages for each field.");
-            }
-
-            close();
+                if (binder.isValid()) {
+                    try {
+                        binder.writeBean(doctor);
+                        doctorServices.update(doctor);
+                        dataProvider.refreshAll();
+                        close();
+                    } catch (ValidationException e) {
+                        Notification.show("ValidationException");
+                        e.printStackTrace();
+                    }
+                } else {
+                    Notification.show("Doctor could not be saved, " +
+                            "please check fields.");
+                }
         });
 
         horizontalLayout.addComponent(new Button("Cancel", event -> close()));

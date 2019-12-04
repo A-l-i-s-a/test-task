@@ -5,6 +5,7 @@ import com.haulmont.testtask.services.Services;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.*;
 
 public class PatientUpdateWindow extends Window {
@@ -39,26 +40,33 @@ public class PatientUpdateWindow extends Window {
 
         Binder<Patient> binder = new Binder<>();
 
-        binder.bind(name, Patient::getName, Patient::setName);
-        binder.bind(surname, Patient::getSurname, Patient::setSurname);
-        binder.bind(patronymic, Patient::getPatronymic, Patient::setPatronymic);
-        binder.bind(phone, Patient::getPhone, Patient::setPhone);
+        binder.forField(name).withValidator(new BeanValidator(Patient.class, "name")).bind(Patient::getName, Patient::setName);
+        binder.forField(surname).withValidator(new BeanValidator(Patient.class, "surname")).bind(Patient::getSurname, Patient::setSurname);
+        binder.forField(patronymic).withValidator(new BeanValidator(Patient.class, "patronymic")).bind(Patient::getPatronymic, Patient::setPatronymic);
+        binder.forField(phone).withValidator(new BeanValidator(Patient.class, "phone")).bind(Patient::getPhone, Patient::setPhone);
 
         binder.readBean(patient);
 
         updatePatient.addClickListener(clickEvent -> {
-            try {
+            if (binder.isValid()) {
+                try {
 
-                binder.writeBean(patient);
-                patientServices.update(patient);
-                dataProvider.refreshAll();
+                    binder.writeBean(patient);
+                    patientServices.update(patient);
+                    dataProvider.refreshAll();
+                    close();
 
-            } catch (ValidationException e) {
+                } catch (ValidationException e) {
+                    Notification.show("Patient could not be saved, " +
+                            "please check field.");
+                    e.printStackTrace();
+                }
+            } else {
                 Notification.show("Patient could not be saved, " +
-                        "please check error messages for each field.");
+                        "please check field.");
             }
 
-            close();
+
         });
 
         horizontalLayout.addComponent(new Button("Cancel", event -> close()));
